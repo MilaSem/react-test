@@ -1,27 +1,42 @@
-# React + TypeScript + Vite
+## This repo contains solutions to tasks for the "RS School React" course.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Course program
 
-Currently, two official plugins are available:
+#### Week 1 (October 23, 2023)
+[React. Components](https://github.com/rolling-scopes-school/tasks/tree/master/react/modules/module01)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+#### Week 2 (October 30, 2023)
+[React. Routing](https://github.com/rolling-scopes-school/tasks/tree/master/react/modules/module02)
 
-## Expanding the ESLint configuration
+#### Week 3 (November 6, 2023)
+[React. Tests/Context API](https://github.com/rolling-scopes-school/tasks/tree/master/react/modules/module03)
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+#### Week 4 (November 13, 2023)
+[React. Redux. RTK](https://github.com/rolling-scopes-school/tasks/tree/master/react/modules/module04)
 
-- Configure the top-level `parserOptions` property like this:
+#### Week 5 (November 20, 2023)
+[React. NextJS/SSR/SSG](https://github.com/rolling-scopes-school/tasks/tree/master/react/modules/module05)
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
+#### Week 6 (November 27, 2023)
+[React. Forms](https://github.com/rolling-scopes-school/tasks/tree/master/react/modules/module06)
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+#### Week 7 (December 4, 2023)
+- [Technical React Interview](https://github.com/rolling-scopes-school/tasks/blob/master/react/interview.md)
+- [Final project "GraphiQL"](https://github.com/rolling-scopes-school/tasks/blob/master/react/modules/graphiql.md)
+
+#### Week 8 (December 11, 2023)
+- [Technical React Interview](https://github.com/rolling-scopes-school/tasks/blob/master/react/interview.md)
+- [Final project "GraphiQL"](https://github.com/rolling-scopes-school/tasks/blob/master/react/modules/graphiql.md)
+
+#### Week 9 (December 18, 2023)
+- [Technical React Interview](https://github.com/rolling-scopes-school/tasks/blob/master/react/interview.md)
+- [Final project "GraphiQL"](https://github.com/rolling-scopes-school/tasks/blob/master/react/modules/graphiql.md)
+
+#### Week 10 (December 25, 2023) - Break week!
+
+#### Week 11 (January 2, 2024)
+- [Technical React Interview](https://github.com/rolling-scopes-school/tasks/blob/master/react/interview.md)
+- [Final project "GraphiQL"](https://github.com/rolling-scopes-school/tasks/blob/master/react/modules/graphiql.md)
+
+#### Week 12 (January 8, 2024)
+Cross-check review [Final project "GraphiQL"](https://github.com/rolling-scopes-school/tasks/blob/master/react/modules/graphiql.md)
