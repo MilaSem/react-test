@@ -45,4 +45,24 @@ h1 {
 
 .result {
   padding-top: 2rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.result__item {
+  margin: 0.25rem;
+  padding: 0.5rem;
+  min-width: 10rem;
+  max-width: 20rem;
+  border: 1px solid #cdcdfa;
+  border-radius: 0.25rem;
+}
+
+.result__item p + p {
+  padding-top: 0.5rem;
+}
+
+.total {
+  padding-top: 2rem;
 }

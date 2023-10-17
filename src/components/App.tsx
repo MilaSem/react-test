@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import { SearchInput } from './SearchInput/SearchInput';
 import { SearchButton } from './SearchButton/SearchButton';
+import { ResultList } from './ResultList/ResultList';
 import { type People } from '../types/people';
 import './App.css';
 
@@ -40,20 +41,20 @@ class App extends Component<object, AppState> {
             searchTerm={this.state.searchTerm}
             setSearchTerm={(term) => this.setState({ searchTerm: term })}
           />
-          <SearchButton searchTerm={this.state.searchTerm} />
+          <SearchButton
+            searchTerm={this.state.searchTerm}
+            heroes={(data) => this.setState({ heroes: data })}
+          />
         </section>
         <section className="result">
-          <ResultList />
-          The result is temporarily in the console
+          <ResultList heroes={this.state.heroes} />
+        </section>
+        <section className="total">
+          There are {this.state.heroes.length} {this.state.heroes.length === 1 ? 'item ' : 'items '}{' '}
+          in the database
         </section>
       </>
     );
-  }
-}
-
-class ResultList extends Component {
-  render() {
-    return <div />;
   }
 }
 
