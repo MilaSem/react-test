@@ -5,7 +5,8 @@ import { type People } from '../../types/people';
 
 interface SearchButtonProps {
   searchTerm: string;
-  heroes: (data: People[]) => void;
+  setHeroes: (data: People[]) => void;
+  setIsLoading: (isLoading: boolean) => void;
 }
 
 class SearchButton extends Component<SearchButtonProps> {
@@ -15,8 +16,12 @@ class SearchButton extends Component<SearchButtonProps> {
 
   handleClick = async () => {
     console.log('click search btn!');
-    console.log(await getSW(this.props.searchTerm));
-    this.props.heroes(await getSW(this.props.searchTerm));
+
+    this.props.setIsLoading(true);
+    const heroes = await getSW(this.props.searchTerm);
+    this.props.setIsLoading(false);
+
+    this.props.setHeroes(heroes);
   };
 
   render() {

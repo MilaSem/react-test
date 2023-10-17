@@ -8,6 +8,7 @@ import './App.css';
 interface AppState {
   searchTerm: string;
   heroes: People[];
+  isLoading: boolean;
 }
 
 class App extends Component<object, AppState> {
@@ -16,6 +17,7 @@ class App extends Component<object, AppState> {
     this.state = {
       searchTerm: '',
       heroes: [],
+      isLoading: false,
     };
   }
 
@@ -35,22 +37,39 @@ class App extends Component<object, AppState> {
   render() {
     return (
       <>
+        {this.state.isLoading ? <div>Text loading</div> : null}
         <h1>Let{`'`}s find a character from Star Wars!</h1>
         <section className="search">
           <SearchInput
             searchTerm={this.state.searchTerm}
-            setSearchTerm={(term) => this.setState({ searchTerm: term })}
+            setSearchTerm={(term) =>
+              this.setState((last) => ({
+                ...last,
+                searchTerm: term,
+              }))
+            }
           />
           <SearchButton
             searchTerm={this.state.searchTerm}
-            heroes={(data) => this.setState({ heroes: data })}
+            setHeroes={(data) =>
+              this.setState((last) => ({
+                ...last,
+                heroes: data,
+              }))
+            }
+            setIsLoading={(isLoading) =>
+              this.setState((last) => ({
+                ...last,
+                isLoading,
+              }))
+            }
           />
         </section>
         <section className="result">
           <ResultList heroes={this.state.heroes} />
         </section>
         <section className="total">
-          There are {this.state.heroes.length} {this.state.heroes.length === 1 ? 'item ' : 'items '}{' '}
+          There are {this.state.heroes.length} {this.state.heroes.length === 1 ? 'item ' : 'items '}
           in the database
         </section>
       </>
