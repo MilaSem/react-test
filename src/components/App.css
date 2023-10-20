@@ -66,3 +66,34 @@ h1 {
 .total {
   padding-top: 2rem;
 }
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.shadow {
+  z-index: 10;
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(205, 205, 250, 0.5);
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  animation: spin 1s infinite linear;
+  border: 5px solid;
+  border-color: #f4f6ff #f4f6ff transparent transparent;
+  background-color: transparent;
+  border-radius: 50%;
+  width: 4rem;
+  height: 4rem;
+}

@@ -37,7 +37,11 @@ class App extends Component<object, AppState> {
   render() {
     return (
       <>
-        {this.state.isLoading ? <div>Text loading</div> : null}
+        {this.state.isLoading ? (
+          <div className="shadow">
+            <div className="spinner"></div>
+          </div>
+        ) : null}
         <h1>Let{`'`}s find a character from Star Wars!</h1>
         <section className="search">
           <SearchInput
