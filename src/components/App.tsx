@@ -4,6 +4,8 @@ import { SearchButton } from './SearchButton/SearchButton';
 import { ResultList } from './ResultList/ResultList';
 import { type People } from '../types/people';
 import './App.css';
+import { getSW } from '../api/api';
+import { ButtonToBreak } from './ButtonToBreak/ButtonToBreak';
 
 interface AppState {
   searchTerm: string;
@@ -19,15 +21,37 @@ class App extends Component<object, AppState> {
       heroes: [],
       isLoading: false,
     };
+    this.setIsLoading = this.setIsLoading.bind(this);
   }
 
+  setIsLoading(isLoading: boolean) {
+    this.setState((last) => ({
+      ...last,
+      isLoading,
+    }));
+  }
+
+  loadPeople = async (searchTerm: string) => {
+    this.setIsLoading(true);
+    const heroes = await getSW(searchTerm);
+    this.setIsLoading(false);
+
+    this.setState((last) => ({
+      ...last,
+      heroes,
+    }));
+  };
+
   componentDidMount() {
+    let searchTerm = this.state.searchTerm;
     if (localStorage.getItem('searchTerm')) {
+      searchTerm = localStorage.getItem('searchTerm') || '';
       this.setState((last) => ({
         ...last,
-        searchTerm: localStorage.getItem('searchTerm') || '',
+        searchTerm,
       }));
     }
+    this.loadPeople(searchTerm);
   }
 
   componentDidUpdate() {
@@ -53,29 +77,12 @@ class App extends Component<object, AppState> {
               }))
             }
           />
-          <SearchButton
-            searchTerm={this.state.searchTerm}
-            setHeroes={(data) =>
-              this.setState((last) => ({
-                ...last,
-                heroes: data,
-              }))
-            }
-            setIsLoading={(isLoading) =>
-              this.setState((last) => ({
-                ...last,
-                isLoading,
-              }))
-            }
-          />
+          <SearchButton handleClick={() => this.loadPeople(this.state.searchTerm)} />
         </section>
         <section className="result">
           <ResultList heroes={this.state.heroes} />
         </section>
-        <section className="total">
-          There are {this.state.heroes.length} {this.state.heroes.length === 1 ? 'item ' : 'items '}
-          in the database
-        </section>
+        <ButtonToBreak />
       </>
     );
   }

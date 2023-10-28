@@ -22,7 +22,8 @@ h1 {
   outline: none;
 }
 
-.search__button {
+.search__button,
+.error__button {
   height: 2.5rem;
   width: 6rem;
   font-family: inherit;
@@ -33,14 +34,21 @@ h1 {
   transition: background-color 0.3s;
 }
 
-.search__button:hover {
+.search__button:hover,
+.error__button:hover {
   cursor: pointer;
   background-color: #fae8cd;
 }
 
-.search__button:active {
+.search__button:active,
+.error__button:active {
   cursor: pointer;
   box-shadow: inset 0 0 20px #f7cf92;
+}
+
+.error__button {
+  background-color: #f7cf92;
+  margin: 2rem 0;
 }
 
 .result {
@@ -57,14 +65,20 @@ h1 {
   max-width: 20rem;
   border: 1px solid #cdcdfa;
   border-radius: 0.25rem;
+  transition: background-color 0.3s;
+}
+
+.result__item:hover {
+  cursor: pointer;
+  background-color: #f4f6ff;
 }
 
 .result__item p + p {
   padding-top: 0.5rem;
 }
 
-.total {
-  padding-top: 2rem;
+.error__text {
+  margin-top: 2rem;
 }
 
 @keyframes spin {
