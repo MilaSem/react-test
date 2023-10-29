@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { PureComponent } from 'react';
 import '../App.css';
 
 interface ResultListItemProps {
@@ -8,7 +8,7 @@ interface ResultListItemProps {
   birth_year: string;
 }
 
-class ResultListItem extends Component<ResultListItemProps> {
+class ResultListItem extends PureComponent<ResultListItemProps> {
   render() {
     return (
       <div className="result__item">

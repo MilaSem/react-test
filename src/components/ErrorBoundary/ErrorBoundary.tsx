@@ -1,7 +1,6 @@
-import { Component, SyntheticEvent } from 'react';
-import { App } from '../App';
+import { Component, SyntheticEvent, PropsWithChildren } from 'react';
 
-class ErrorBoundary extends Component {
+class ErrorBoundary extends Component<PropsWithChildren> {
   state = {
     hasError: false,
     error: '',
@@ -33,7 +32,7 @@ class ErrorBoundary extends Component {
             </button>
           </>
         ) : (
-          <App />
+          this.props.children
         )}
       </div>
     );
