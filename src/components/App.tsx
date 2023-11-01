@@ -76,6 +76,13 @@ class App extends Component<object, AppState> {
                 searchTerm: term,
               }))
             }
+            handleKeyDown={(event: { keyCode: number }) => {
+              if (event.keyCode === 13) {
+                console.log('enter key pressed');
+                this.loadPeople(this.state.searchTerm);
+                return false;
+              }
+            }}
           />
           <SearchButton handleClick={() => this.loadPeople(this.state.searchTerm)} />
         </section>

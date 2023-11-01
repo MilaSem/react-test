@@ -4,7 +4,6 @@ import { App } from '../App';
 class ErrorBoundary extends Component {
   state = {
     hasError: false,
-    error: '',
   };
 
   static getDerivedStateFromError() {

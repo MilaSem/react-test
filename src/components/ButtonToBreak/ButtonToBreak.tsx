@@ -1,30 +1,21 @@
-import { Component, SyntheticEvent } from 'react';
+import { useState } from 'react';
 
-class ButtonToBreak extends Component {
-  state = {
-    hasError: false,
-    error: '',
+const ButtonToBreak = () => {
+  const [hasError, setHasError] = useState(false);
+
+  const handleError = () => {
+    setHasError(true);
   };
 
-  handleError = (e: SyntheticEvent) => {
-    e.preventDefault();
-    this.setState({
-      hasError: true,
-      error: 'error in buttonTemp',
-    });
-  };
-
-  render() {
-    const { hasError, error } = this.state;
-
-    if (hasError) throw new Error(error);
-
-    return (
-      <button className="error__button" onClick={this.handleError}>
-        To break!
-      </button>
-    );
+  if (hasError) {
+    throw new Error('error in ButtonToBreak');
   }
-}
+
+  return (
+    <button className="error__button" onClick={handleError}>
+      To break!
+    </button>
+  );
+};
 
 export { ButtonToBreak };

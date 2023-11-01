@@ -1,27 +1,29 @@
-import { Component } from 'react';
 import '../App.css';
 import { type People } from '../../types/people';
 import { ResultListItem } from '../ResultListItem/ResultListItem';
+import { NothingFound } from '../NothingFound/NothingFound';
 interface ResultListProps {
   heroes: People[];
 }
 
-class ResultList extends Component<ResultListProps> {
-  render() {
+const ResultList = (props: ResultListProps) => {
+  if (props.heroes.length !== 0) {
     return (
       <>
-        {this.props.heroes.map((item) => (
+        {props.heroes.map((hero) => (
           <ResultListItem
-            key={item.name}
-            name={item.name}
-            height={item.height}
-            mass={item.mass}
-            birth_year={item.birth_year}
+            key={hero.name}
+            name={hero.name}
+            height={hero.height}
+            mass={hero.mass}
+            birth_year={hero.birth_year}
           />
         ))}
       </>
     );
+  } else {
+    return <NothingFound />;
   }
-}
+};
 
 export { ResultList };

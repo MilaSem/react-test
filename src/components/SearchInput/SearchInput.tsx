@@ -1,30 +1,26 @@
-import { Component } from 'react';
+import { ChangeEvent } from 'react';
 import '../App.css';
 
 interface SearchInputProps {
   searchTerm: string;
   setSearchTerm: (term: string) => void;
+  handleKeyDown: (event: { keyCode: number }) => false | undefined;
 }
 
-class SearchInput extends Component<SearchInputProps> {
-  constructor(props: SearchInputProps) {
-    super(props);
-  }
-
-  handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.props.setSearchTerm(e.target.value);
+const SearchInput = (props: SearchInputProps) => {
+  const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    props.setSearchTerm(e.target.value);
   };
 
-  render() {
-    return (
-      <input
-        type="text"
-        value={this.props.searchTerm}
-        onChange={this.handleSearchInputChange}
-        className="search__input"
-      />
-    );
-  }
-}
+  return (
+    <input
+      type="text"
+      value={props.searchTerm}
+      onChange={handleSearchInputChange}
+      className="search__input"
+      onKeyDown={props.handleKeyDown}
+    />
+  );
+};
 
 export { SearchInput };

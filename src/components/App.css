@@ -111,3 +111,8 @@ h1 {
   width: 4rem;
   height: 4rem;
 }
+
+.nothing-found {
+  font-size: 1.5rem;
+  color: #cdcdfa;
+}

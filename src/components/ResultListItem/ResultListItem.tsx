@@ -1,4 +1,3 @@
-import { Component } from 'react';
 import '../App.css';
 
 interface ResultListItemProps {
@@ -8,20 +7,19 @@ interface ResultListItemProps {
   birth_year: string;
 }
 
-class ResultListItem extends Component<ResultListItemProps> {
-  render() {
-    return (
-      <div className="result__item">
-        <p>
-          name: <b>{this.props.name}</b>
-        </p>
-        <p>
-          description: height {this.props.height} cm, mass {this.props.mass} kg, birth year{' '}
-          {this.props.birth_year}
-        </p>
-      </div>
-    );
-  }
-}
+const ResultListItem = (props: ResultListItemProps) => {
+  const { name, height, mass, birth_year } = props;
+
+  return (
+    <div className="result__item">
+      <p>
+        name: <b>{name}</b>
+      </p>
+      <p>
+        description: height {height} cm, mass {mass} kg, birth year {birth_year}
+      </p>
+    </div>
+  );
+};
 
 export { ResultListItem };
