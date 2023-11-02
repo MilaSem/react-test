@@ -1,13 +1,13 @@
 import '../App.css';
 
 interface SearchButtonProps {
-  handleClick: () => void;
+  onClick: () => void;
 }
 
 const SearchButton = (props: SearchButtonProps) => {
   return (
     <>
-      <button type="submit" onClick={props.handleClick} className="search__button">
+      <button type="submit" onClick={props.onClick} className="search__button">
         Search
       </button>
     </>

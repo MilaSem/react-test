@@ -4,7 +4,7 @@ import '../App.css';
 interface SearchInputProps {
   searchTerm: string;
   setSearchTerm: (term: string) => void;
-  handleKeyDown: (event: { keyCode: number }) => false | undefined;
+  onKeyDown: (event: { keyCode: number }) => false | undefined;
 }
 
 const SearchInput = (props: SearchInputProps) => {
@@ -18,7 +18,7 @@ const SearchInput = (props: SearchInputProps) => {
       value={props.searchTerm}
       onChange={handleSearchInputChange}
       className="search__input"
-      onKeyDown={props.handleKeyDown}
+      onKeyDown={props.onKeyDown}
     />
   );
 };
