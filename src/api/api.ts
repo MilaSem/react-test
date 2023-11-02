@@ -1,14 +1,14 @@
-import { type People } from '../types/people';
+import { type Artwork } from './artwork';
 
-async function getSW(searchTerm: string): Promise<People[]> {
-  const url = `https://swapi.dev/api/people/?search=${searchTerm}`;
+async function getArt(searchTerm: string): Promise<Artwork[]> {
+  const url = `https://api.artic.edu/api/v1/artworks/search?q=${searchTerm}`;
   return fetch(url)
     .then((response) => {
       return response.json();
     })
     .then((data) => {
-      return data.results;
+      return data.data;
     });
 }
 
-export { getSW };
+export { getArt };

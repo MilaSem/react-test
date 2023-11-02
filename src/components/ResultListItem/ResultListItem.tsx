@@ -1,23 +1,19 @@
 import '../App.css';
 
 interface ResultListItemProps {
-  name: string;
-  height: string;
-  mass: string;
-  birth_year: string;
+  title: string;
+  alt_text: string;
 }
 
 const ResultListItem = (props: ResultListItemProps) => {
-  const { name, height, mass, birth_year } = props;
+  const { title, alt_text } = props;
 
   return (
     <div className="result__item">
       <p>
-        name: <b>{name}</b>
+        <b>{title}</b>
       </p>
-      <p>
-        description: height {height} cm, mass {mass} kg, birth year {birth_year}
-      </p>
+      <p>{alt_text}</p>
     </div>
   );
 };

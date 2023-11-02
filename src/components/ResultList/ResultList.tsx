@@ -1,22 +1,20 @@
 import '../App.css';
-import { type People } from '../../types/people';
+import { type Artwork } from '../../api/artwork';
 import { ResultListItem } from '../ResultListItem/ResultListItem';
 import { NothingFound } from '../NothingFound/NothingFound';
 interface ResultListProps {
-  heroes: People[];
+  artworks: Artwork[];
 }
 
 const ResultList = (props: ResultListProps) => {
-  if (props.heroes.length !== 0) {
+  if (props.artworks.length !== 0) {
     return (
       <>
-        {props.heroes.map((hero) => (
+        {props.artworks.map((artwork) => (
           <ResultListItem
-            key={hero.name}
-            name={hero.name}
-            height={hero.height}
-            mass={hero.mass}
-            birth_year={hero.birth_year}
+            key={artwork.id}
+            title={artwork.title}
+            alt_text={artwork.thumbnail.alt_text}
           />
         ))}
       </>

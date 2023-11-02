@@ -2,23 +2,23 @@ import { useState, useEffect, useCallback } from 'react';
 import { SearchInput } from './SearchInput/SearchInput';
 import { SearchButton } from './SearchButton/SearchButton';
 import { ResultList } from './ResultList/ResultList';
-import { type People } from '../types/people';
+import { type Artwork } from '../api/artwork';
 import './App.css';
-import { getSW } from '../api/api';
+import { getArt } from '../api/api';
 import { ButtonToBreak } from './ButtonToBreak/ButtonToBreak';
 import { Pagination } from './Pagination/Pagination';
 import { Dropdown } from './Pagination/Dropdown';
 
 interface AppState {
   searchTerm: string;
-  heroes: People[];
+  artworks: Artwork[];
   isLoading: boolean;
 }
 
 const App = () => {
   const [state, setState] = useState<AppState>({
     searchTerm: localStorage.getItem('searchTerm') || '',
-    heroes: [],
+    artworks: [],
     isLoading: false,
   });
 
@@ -29,36 +29,36 @@ const App = () => {
     }));
   };
 
-  const fetchPeople = useCallback(async (searchTerm: string) => {
+  const fetchArtwork = useCallback(async (searchTerm: string) => {
     setIsLoading(true);
-    const heroes = await getSW(searchTerm);
+    const artworks = await getArt(searchTerm);
     setIsLoading(false);
-    return heroes;
+    return artworks;
   }, []);
 
-  const loadPeople = useCallback(
+  const loadArtwork = useCallback(
     async (searchTerm: string) => {
-      const heroes = await fetchPeople(searchTerm);
+      const artworks = await fetchArtwork(searchTerm);
 
       setState((last) => ({
         ...last,
-        heroes,
+        artworks,
       }));
       localStorage.setItem('searchTerm', searchTerm);
     },
-    [fetchPeople],
+    [fetchArtwork],
   );
 
   useEffect(() => {
     let ignore = false;
     async function init() {
       const searchTerm = localStorage.getItem('searchTerm') || '';
-      const heroes = await fetchPeople(searchTerm);
+      const artworks = await fetchArtwork(searchTerm);
 
       if (!ignore) {
         setState((last) => ({
           ...last,
-          heroes,
+          artworks,
         }));
       }
     }
@@ -66,7 +66,7 @@ const App = () => {
     return () => {
       ignore = true;
     };
-  }, [fetchPeople]);
+  }, [fetchArtwork]);
 
   return (
     <>
@@ -75,7 +75,7 @@ const App = () => {
           <div className="spinner"></div>
         </div>
       ) : null}
-      <h1>Let{`'`}s find a character from Star Wars!</h1>
+      <h1>Let{`'`}s find artwork at the Art Institute of Chicago!</h1>
       <section className="search">
         <SearchInput
           searchTerm={state.searchTerm}
@@ -88,15 +88,15 @@ const App = () => {
           onKeyDown={(event: { keyCode: number }) => {
             if (event.keyCode === 13) {
               console.log('enter key pressed');
-              loadPeople(state.searchTerm);
+              loadArtwork(state.searchTerm);
               return false;
             }
           }}
         />
-        <SearchButton onClick={() => loadPeople(state.searchTerm)} />
+        <SearchButton onClick={() => loadArtwork(state.searchTerm)} />
       </section>
       <section className="result">
-        <ResultList heroes={state.heroes} />
+        <ResultList artworks={state.artworks} />
       </section>
       <Pagination />
       <Dropdown />
