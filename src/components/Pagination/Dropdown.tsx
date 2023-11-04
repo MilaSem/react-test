@@ -1,22 +1,19 @@
 import { ChangeEvent } from 'react';
-import { useState } from 'react';
-function Dropdown() {
-  const [selectedOption, setSelectedOption] = useState('');
+import '../App.css';
 
-  function handleChange(e: ChangeEvent<HTMLSelectElement>) {
-    setSelectedOption(e.target.value);
-  }
-
-  return (
-    <div>
-      <p>Select number items per page</p>
-      <select value={selectedOption} onChange={handleChange}>
-        <option value="10">10</option>
-        <option value="20">20</option>
-        <option value="30">30</option>
-      </select>
-    </div>
-  );
+interface DropdownProps {
+  onChange: (e: ChangeEvent<HTMLSelectElement>) => void;
 }
+
+const Dropdown = (props: DropdownProps) => {
+  return (
+    <select className="dropdown" name="dropdown" id="" onChange={props.onChange}>
+      <option value="10">{`10/page`}</option>
+      <option value="20">{`20/page`}</option>
+      <option value="50">{`50/page`}</option>
+      <option value="100">{`100/page`}</option>
+    </select>
+  );
+};
 
 export { Dropdown };

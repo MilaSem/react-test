@@ -112,9 +112,16 @@ h1 {
   height: 4rem;
 }
 
-.nothing-found {
+.nothing-found,
+.temp {
   font-size: 1.5rem;
   color: #cdcdfa;
+}
+
+.pagination__nav {
+  display: flex;
+  justify-content: center;
+  padding-top: 2rem;
 }
 
 .pagination__button {
@@ -137,4 +144,25 @@ h1 {
 .pagination__button:active {
   cursor: pointer;
   box-shadow: inset 0 0 20px #f7cf92;
+}
+
+.pagination__number {
+  margin: 0 0.5rem;
+}
+
+.dropdown {
+  margin: 5px;
+  margin-left: 1rem;
+  height: 2.5rem;
+  font-size: inherit;
+  font-family: inherit;
+  border-radius: 0.25rem;
+  border: none;
+  background-color: #cdcdfa;
+  transition: background-color 0.3s;
+}
+
+.dropdown:hover {
+  cursor: pointer;
+  background-color: #fae8cd;
 }

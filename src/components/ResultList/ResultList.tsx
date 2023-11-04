@@ -14,7 +14,9 @@ const ResultList = (props: ResultListProps) => {
           <ResultListItem
             key={artwork.id}
             title={artwork.title}
-            alt_text={artwork.thumbnail.alt_text}
+            alt_text={
+              artwork.thumbnail && artwork.thumbnail.alt_text ? artwork.thumbnail.alt_text : '' //thumbnail may be missing
+            }
           />
         ))}
       </>

@@ -1,18 +1,21 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { SearchInput } from './SearchInput/SearchInput';
 import { SearchButton } from './SearchButton/SearchButton';
 import { ResultList } from './ResultList/ResultList';
 import { type Artwork } from '../api/artwork';
 import './App.css';
-import { getArt } from '../api/api';
+import { getArt, getTotalItems } from '../api/api';
 import { ButtonToBreak } from './ButtonToBreak/ButtonToBreak';
-import { Pagination } from './Pagination/Pagination';
 import { Dropdown } from './Pagination/Dropdown';
+import { PaginationButton } from './Pagination/PaginationButton';
 
 interface AppState {
   searchTerm: string;
   artworks: Artwork[];
   isLoading: boolean;
+  page: number;
+  limit: number;
+  totalPages: number;
 }
 
 const App = () => {
@@ -20,6 +23,9 @@ const App = () => {
     searchTerm: localStorage.getItem('searchTerm') || '',
     artworks: [],
     isLoading: false,
+    page: 1,
+    limit: 10,
+    totalPages: 12339, // set on first boot 123386/10!
   });
 
   const setIsLoading = (isLoading: boolean) => {
@@ -29,12 +35,21 @@ const App = () => {
     }));
   };
 
-  const fetchArtwork = useCallback(async (searchTerm: string) => {
-    setIsLoading(true);
-    const artworks = await getArt(searchTerm);
-    setIsLoading(false);
-    return artworks;
-  }, []);
+  const fetchArtwork = useCallback(
+    async (searchTerm: string) => {
+      setIsLoading(true);
+      const artworks = await getArt(searchTerm, state.page, state.limit);
+      const totalItems = await getTotalItems(searchTerm);
+      setState((last) => ({
+        ...last,
+        totalPages: Math.ceil(totalItems / state.limit),
+      }));
+
+      setIsLoading(false);
+      return artworks;
+    },
+    [state.page, state.limit],
+  );
 
   const loadArtwork = useCallback(
     async (searchTerm: string) => {
@@ -68,6 +83,14 @@ const App = () => {
     };
   }, [fetchArtwork]);
 
+  useEffect(() => {
+    setState((last) => ({
+      ...last,
+      page: 1,
+      limit: 10,
+    }));
+  }, [state.searchTerm]); //when characters in search input are removed, the page is rendered! Why?!
+
   return (
     <>
       {state.isLoading ? (
@@ -95,11 +118,66 @@ const App = () => {
         />
         <SearchButton onClick={() => loadArtwork(state.searchTerm)} />
       </section>
+      <div className="pagination__nav">
+        <div className="pagination">
+          <PaginationButton
+            char="<<"
+            onClick={() => {
+              setState((last) => ({
+                ...last,
+                page: 1,
+              }));
+            }}
+          />
+          <PaginationButton
+            char="<"
+            onClick={() => {
+              state.page > 1 &&
+                setState((last) => ({
+                  ...last,
+                  page: state.page - 1,
+                }));
+            }}
+          />
+          <span className="pagination__number">{state.page}</span>
+          <PaginationButton
+            char=">"
+            onClick={() => {
+              state.page < state.totalPages &&
+                setState((last) => ({
+                  ...last,
+                  page: state.page + 1,
+                }));
+            }}
+          />
+          <PaginationButton
+            char=">>"
+            onClick={() => {
+              setState((last) => ({
+                ...last,
+                page: state.totalPages,
+              }));
+            }}
+          />
+        </div>
+        <Dropdown
+          onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+            setState((last) => ({
+              ...last,
+              limit: Number(e.target.value),
+            }));
+          }}
+        />
+      </div>
+
+      <div className="temp">
+        page {state.page}, limit {state.limit}, total pages {state.totalPages}
+      </div>
+
       <section className="result">
         <ResultList artworks={state.artworks} />
       </section>
-      <Pagination />
-      <Dropdown />
+
       <ButtonToBreak />
     </>
   );
