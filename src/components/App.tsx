@@ -87,9 +87,8 @@ const App = () => {
     setState((last) => ({
       ...last,
       page: 1,
-      limit: 10,
     }));
-  }, [state.searchTerm]); //when characters in search input are removed, the page is rendered! Why?!
+  }, [state.searchTerm, state.limit]);
 
   return (
     <>
