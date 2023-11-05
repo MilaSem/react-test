@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, ChangeEvent } from 'react';
+import { useSearchParams, Outlet } from 'react-router-dom';
 import { SearchInput } from './SearchInput/SearchInput';
 import { SearchButton } from './SearchButton/SearchButton';
 import { ResultList } from './ResultList/ResultList';
@@ -19,14 +20,22 @@ interface AppState {
 }
 
 const App = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [page, details] = [Number(searchParams.get('page')), Number(searchParams.get('details'))];
+
   const [state, setState] = useState<AppState>({
     searchTerm: localStorage.getItem('searchTerm') || '',
     artworks: [],
     isLoading: false,
-    page: 1,
+    page: page || 1,
     limit: 10,
     totalPages: 12339, // set on first boot 123386/10!
   });
+
+  useEffect(() => {
+    setSearchParams((last) => ({ ...last, page: String(state.page) }));
+  }, [state.page, setSearchParams]);
 
   const setIsLoading = (isLoading: boolean) => {
     setState((last) => ({
@@ -42,7 +51,7 @@ const App = () => {
       const totalItems = await getTotalItems(searchTerm);
       setState((last) => ({
         ...last,
-        totalPages: Math.ceil(totalItems / state.limit),
+        totalPages: Math.min(Math.ceil(totalItems / state.limit), 10),
       }));
 
       setIsLoading(false);
@@ -53,6 +62,11 @@ const App = () => {
 
   const loadArtwork = useCallback(
     async (searchTerm: string) => {
+      setState((last) => ({
+        ...last,
+        page: 1,
+      }));
+
       const artworks = await fetchArtwork(searchTerm);
 
       setState((last) => ({
@@ -83,13 +97,6 @@ const App = () => {
     };
   }, [fetchArtwork]);
 
-  useEffect(() => {
-    setState((last) => ({
-      ...last,
-      page: 1,
-    }));
-  }, [state.searchTerm, state.limit]);
-
   return (
     <>
       {state.isLoading ? (
@@ -105,11 +112,13 @@ const App = () => {
             setState((last) => ({
               ...last,
               searchTerm: term,
+              // page: 1,
             }))
           }
           onKeyDown={(event: { keyCode: number }) => {
             if (event.keyCode === 13) {
               console.log('enter key pressed');
+
               loadArtwork(state.searchTerm);
               return false;
             }
@@ -164,20 +173,21 @@ const App = () => {
             setState((last) => ({
               ...last,
               limit: Number(e.target.value),
+              page: 1,
             }));
           }}
         />
       </div>
-
-      <div className="temp">
-        page {state.page}, limit {state.limit}, total pages {state.totalPages}
-      </div>
-
       <section className="result">
         <ResultList artworks={state.artworks} />
       </section>
-
       <ButtonToBreak />
+
+      {details ? (
+        <div id="detail">
+          <Outlet />
+        </div>
+      ) : null}
     </>
   );
 };

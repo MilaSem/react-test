@@ -26,4 +26,14 @@ async function getTotalItems(searchTerm: string): Promise<number> {
     });
 }
 
-export { getArt, getTotalItems };
+async function getDetails(url: string): Promise<number> {
+  return fetch(url)
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      return data.data;
+    });
+}
+
+export { getArt, getTotalItems, getDetails };

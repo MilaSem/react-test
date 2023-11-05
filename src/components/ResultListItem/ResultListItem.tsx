@@ -3,13 +3,15 @@ import '../App.css';
 interface ResultListItemProps {
   title: string;
   alt_text: string;
+  onClick: () => void;
+  id: number;
 }
 
 const ResultListItem = (props: ResultListItemProps) => {
   const { title, alt_text } = props;
 
   return (
-    <div className="result__item">
+    <div className="result__item" onClick={props.onClick}>
       <p>
         <b>{title}</b>
       </p>
