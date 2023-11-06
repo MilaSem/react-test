@@ -15,6 +15,11 @@ async function getArt(
     });
 }
 
+// limit * totalPages <= 1000!
+// else API answers 403
+// "You have requested too many results. Please refine your parameters."
+const TOTAL_ITEMS_API = 1000;
+
 async function getTotalItems(searchTerm: string): Promise<number> {
   const url = `https://api.artic.edu/api/v1/artworks/search?q=${searchTerm}`;
   return fetch(url)
@@ -36,4 +41,4 @@ async function getDetails(url: string): Promise<number> {
     });
 }
 
-export { getArt, getTotalItems, getDetails };
+export { getArt, TOTAL_ITEMS_API, getTotalItems, getDetails };

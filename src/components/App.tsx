@@ -5,7 +5,7 @@ import { SearchButton } from './SearchButton/SearchButton';
 import { ResultList } from './ResultList/ResultList';
 import { type Artwork } from '../api/artwork';
 import './App.css';
-import { getArt, getTotalItems } from '../api/api';
+import { getArt, TOTAL_ITEMS_API, getTotalItems } from '../api/api';
 import { ButtonToBreak } from './ButtonToBreak/ButtonToBreak';
 import { Dropdown } from './Pagination/Dropdown';
 import { PaginationButton } from './Pagination/PaginationButton';
@@ -30,7 +30,7 @@ const App = () => {
     isLoading: false,
     page: page || 1,
     limit: 10,
-    totalPages: 12339, // set on first boot 123386/10!
+    totalPages: 100,
   });
 
   useEffect(() => {
@@ -51,7 +51,8 @@ const App = () => {
       const totalItems = await getTotalItems(searchTerm);
       setState((last) => ({
         ...last,
-        totalPages: Math.min(Math.ceil(totalItems / state.limit), 10),
+        artworks,
+        totalPages: Math.min(TOTAL_ITEMS_API / state.limit, Math.ceil(totalItems / state.limit)),
       }));
 
       setIsLoading(false);
