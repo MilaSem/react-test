@@ -1,7 +1,6 @@
-import { useState, useEffect, useCallback, ChangeEvent } from 'react';
+import { useState, useEffect, ChangeEvent } from 'react';
 import { useSearchParams, Outlet } from 'react-router-dom';
-import { SearchInput } from './SearchInput/SearchInput';
-import { SearchButton } from './SearchButton/SearchButton';
+import { SearchForm } from './SearchForm/SearchForm';
 import { ResultList } from './ResultList/ResultList';
 import { type Artwork } from '../api/artwork';
 import './App.css';
@@ -34,7 +33,10 @@ const App = () => {
   });
 
   useEffect(() => {
-    setSearchParams((last) => ({ ...last, page: String(state.page) }));
+    setSearchParams((last) => ({
+      ...last,
+      page: String(state.page),
+    }));
   }, [state.page, setSearchParams]);
 
   const setIsLoading = (isLoading: boolean) => {
@@ -44,59 +46,38 @@ const App = () => {
     }));
   };
 
-  const fetchArtwork = useCallback(
-    async (searchTerm: string) => {
+  useEffect(() => {
+    const fetchArtworks = async () => {
       setIsLoading(true);
-      const artworks = await getArt(searchTerm, state.page, state.limit);
-      const totalItems = await getTotalItems(searchTerm);
+      const artworks = await getArt(state.searchTerm, state.page, state.limit);
+      const totalItems = await getTotalItems(state.searchTerm);
       setState((last) => ({
         ...last,
         artworks,
         totalPages: Math.min(TOTAL_ITEMS_API / state.limit, Math.ceil(totalItems / state.limit)),
       }));
-
       setIsLoading(false);
-      return artworks;
-    },
-    [state.page, state.limit],
-  );
+    };
 
-  const loadArtwork = useCallback(
-    async (searchTerm: string) => {
-      setState((last) => ({
-        ...last,
-        page: 1,
-      }));
-
-      const artworks = await fetchArtwork(searchTerm);
-
-      setState((last) => ({
-        ...last,
-        artworks,
-      }));
-      localStorage.setItem('searchTerm', searchTerm);
-    },
-    [fetchArtwork],
-  );
+    fetchArtworks();
+  }, [state.page, state.limit, state.searchTerm]);
 
   useEffect(() => {
-    let ignore = false;
-    async function init() {
-      const searchTerm = localStorage.getItem('searchTerm') || '';
-      const artworks = await fetchArtwork(searchTerm);
+    const searchTerm = localStorage.getItem('searchTerm') || '';
+    setState((last) => ({
+      ...last,
+      searchTerm,
+    }));
+  }, []);
 
-      if (!ignore) {
-        setState((last) => ({
-          ...last,
-          artworks,
-        }));
-      }
-    }
-    init();
-    return () => {
-      ignore = true;
-    };
-  }, [fetchArtwork]);
+  function handleSearchSubmit(searchTerm: string) {
+    localStorage.setItem('searchTerm', searchTerm);
+    setState((last) => ({
+      ...last,
+      page: 1,
+      searchTerm,
+    }));
+  }
 
   return (
     <>
@@ -107,25 +88,7 @@ const App = () => {
       ) : null}
       <h1>Let{`'`}s find artwork at the Art Institute of Chicago!</h1>
       <section className="search">
-        <SearchInput
-          searchTerm={state.searchTerm}
-          setSearchTerm={(term) =>
-            setState((last) => ({
-              ...last,
-              searchTerm: term,
-              // page: 1,
-            }))
-          }
-          onKeyDown={(event: { keyCode: number }) => {
-            if (event.keyCode === 13) {
-              console.log('enter key pressed');
-
-              loadArtwork(state.searchTerm);
-              return false;
-            }
-          }}
-        />
-        <SearchButton onClick={() => loadArtwork(state.searchTerm)} />
+        <SearchForm searchTerm={state.searchTerm} onSubmit={(value) => handleSearchSubmit(value)} />
       </section>
       <div className="pagination__nav">
         <div className="pagination">
