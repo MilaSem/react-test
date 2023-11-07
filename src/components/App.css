@@ -61,8 +61,7 @@ h1 {
 .result__item {
   margin: 0.25rem;
   padding: 0.5rem;
-  min-width: 10rem;
-  max-width: 20rem;
+  width: 20rem;
   border: 1px solid #cdcdfa;
   border-radius: 0.25rem;
   transition: background-color 0.3s;
@@ -75,6 +74,10 @@ h1 {
 
 .result__item p + p {
   padding-top: 0.5rem;
+}
+
+.result__item img {
+  width: 100%;
 }
 
 .error__text {

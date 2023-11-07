@@ -31,7 +31,7 @@ async function getTotalItems(searchTerm: string): Promise<number> {
     });
 }
 
-async function getDetails(url: string): Promise<number> {
+async function getDetails(url: string) {
   return fetch(url)
     .then((response) => {
       return response.json();
