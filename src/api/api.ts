@@ -41,4 +41,15 @@ async function getDetails(url: string) {
     });
 }
 
-export { getArt, TOTAL_ITEMS_API, getTotalItems, getDetails };
+async function getDetailsFromId(id: number): Promise<Artwork> {
+  const url = `https://api.artic.edu/api/v1/artworks/${id}`;
+  return fetch(url)
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      return data.data;
+    });
+}
+
+export { getArt, TOTAL_ITEMS_API, getTotalItems, getDetails, getDetailsFromId };

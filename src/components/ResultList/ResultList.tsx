@@ -16,12 +16,10 @@ const ResultList = (props: ResultListProps) => {
             key={artwork.id}
             title={artwork.title}
             api_link={artwork.api_link}
-            alt_text={
-              artwork.thumbnail && artwork.thumbnail.alt_text ? artwork.thumbnail.alt_text : '' //thumbnail may be missing
-            }
             onClick={() => {
-              console.log('click on card');
+              console.log(`click on card id: ${artwork.id}`);
             }}
+            alt_text={''}
           />
         ))}
       </>

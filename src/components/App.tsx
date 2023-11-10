@@ -21,7 +21,10 @@ interface AppState {
 const App = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [page, details] = [Number(searchParams.get('page')), Number(searchParams.get('details'))];
+  const [page, details] = [
+    Number(searchParams.get('page')),
+    Number.parseInt(searchParams.get('details') as string),
+  ];
 
   const [state, setState] = useState<AppState>({
     searchTerm: localStorage.getItem('searchTerm') || '',
@@ -33,10 +36,10 @@ const App = () => {
   });
 
   useEffect(() => {
-    setSearchParams((last) => ({
-      ...last,
-      page: String(state.page),
-    }));
+    setSearchParams((last) => {
+      last.set('page', String(state.page));
+      return last;
+    });
   }, [state.page, setSearchParams]);
 
   const setIsLoading = (isLoading: boolean) => {
@@ -70,85 +73,89 @@ const App = () => {
     }));
   }, []);
 
-  function handleSearchSubmit(searchTerm: string) {
+  const handleSearchSubmit = (searchTerm: string) => {
     localStorage.setItem('searchTerm', searchTerm);
     setState((last) => ({
       ...last,
       page: 1,
       searchTerm,
     }));
-  }
+  };
 
   return (
     <>
-      {state.isLoading ? (
-        <div className="shadow">
-          <div className="spinner"></div>
-        </div>
-      ) : null}
-      <h1>Let{`'`}s find artwork at the Art Institute of Chicago!</h1>
-      <section className="search">
-        <SearchForm searchTerm={state.searchTerm} onSubmit={(value) => handleSearchSubmit(value)} />
-      </section>
-      <div className="pagination__nav">
-        <div className="pagination">
-          <PaginationButton
-            char="<<"
-            onClick={() => {
+      <div className="main">
+        {state.isLoading ? (
+          <div className="shadow">
+            <div className="spinner"></div>
+          </div>
+        ) : null}
+        <h1>Let{`'`}s find artwork at the Art Institute of Chicago!</h1>
+        <section className="search">
+          <SearchForm
+            searchTerm={state.searchTerm}
+            onSubmit={(value) => handleSearchSubmit(value)}
+          />
+        </section>
+        <div className="pagination__nav">
+          <div className="pagination">
+            <PaginationButton
+              char="<<"
+              onClick={() => {
+                setState((last) => ({
+                  ...last,
+                  page: 1,
+                }));
+              }}
+            />
+            <PaginationButton
+              char="<"
+              onClick={() => {
+                state.page > 1 &&
+                  setState((last) => ({
+                    ...last,
+                    page: state.page - 1,
+                  }));
+              }}
+            />
+            <span className="pagination__number">{state.page}</span>
+            <PaginationButton
+              char=">"
+              onClick={() => {
+                state.page < state.totalPages &&
+                  setState((last) => ({
+                    ...last,
+                    page: state.page + 1,
+                  }));
+              }}
+            />
+            <PaginationButton
+              char=">>"
+              onClick={() => {
+                setState((last) => ({
+                  ...last,
+                  page: state.totalPages,
+                }));
+              }}
+            />
+          </div>
+          <Dropdown
+            onChange={(e: ChangeEvent<HTMLSelectElement>) => {
               setState((last) => ({
                 ...last,
+                limit: Number(e.target.value),
                 page: 1,
               }));
             }}
           />
-          <PaginationButton
-            char="<"
-            onClick={() => {
-              state.page > 1 &&
-                setState((last) => ({
-                  ...last,
-                  page: state.page - 1,
-                }));
-            }}
-          />
-          <span className="pagination__number">{state.page}</span>
-          <PaginationButton
-            char=">"
-            onClick={() => {
-              state.page < state.totalPages &&
-                setState((last) => ({
-                  ...last,
-                  page: state.page + 1,
-                }));
-            }}
-          />
-          <PaginationButton
-            char=">>"
-            onClick={() => {
-              setState((last) => ({
-                ...last,
-                page: state.totalPages,
-              }));
-            }}
-          />
         </div>
-        <Dropdown
-          onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-            setState((last) => ({
-              ...last,
-              limit: Number(e.target.value),
-              page: 1,
-            }));
-          }}
-        />
+        <section className="result">
+          <ResultList artworks={state.artworks} />
+        </section>
+        <ButtonToBreak />
       </div>
-      <section className="result">
-        <ResultList artworks={state.artworks} />
-      </section>
-      <ButtonToBreak />
-
       {details ? (
-        <div id="detail">
+        <div id="details" className="details">
           <Outlet />
         </div>
       ) : null}

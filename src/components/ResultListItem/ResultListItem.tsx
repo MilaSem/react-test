@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import '../App.css';
+import { useSearchParams } from 'react-router-dom';
 
 interface ResultListItemProps {
   api_link: string;
@@ -10,7 +11,7 @@ interface ResultListItemProps {
 }
 
 const ResultListItem = (props: ResultListItemProps) => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [, setSearchParams] = useSearchParams();
   const [imageArtUrl, setImageArtUrl] = useState('');
 
   const getArtImgId = useCallback(async (): Promise<string> => {
@@ -24,12 +25,10 @@ const ResultListItem = (props: ResultListItemProps) => {
   }, [props.id]);
 
   useEffect(() => {
-    setIsLoading(true);
     async function getArtImageUrl() {
       const url = await getArtImgId();
       setImageArtUrl(`https://www.artic.edu/iiif/2/${url}/full/843,/0/default.jpg`);
     }
-    setIsLoading(false);
     getArtImageUrl();
   }, [getArtImgId]);
 
@@ -37,8 +36,15 @@ const ResultListItem = (props: ResultListItemProps) => {
 
   return (
     <>
-      {isLoading ? <div>Loading...</div> : null}
-      <div className="result__item" onClick={props.onClick}>
+      <div
+        className="result__item"
+        onClick={() => {
+          setSearchParams((last) => {
+            last.set('details', String(props.id));
+            return last;
+          });
+        }}
+      >
         <p>
           <b>{title}</b>
         </p>

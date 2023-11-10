@@ -1,7 +1,10 @@
 export type Artwork = {
+  artist_title?: string;
+  date_end?: string;
+  medium_display?: string;
   _score: number;
   thumbnail: {
-    alt_text: string;
+    alt_text?: string;
     width: number;
     lqip: string;
     height: number;
