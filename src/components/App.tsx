@@ -82,9 +82,21 @@ const App = () => {
     }));
   };
 
+  const handleMainClick = (event: { preventDefault: () => void }) => {
+    if (!details) {
+      return;
+    }
+
+    event.preventDefault();
+    setSearchParams((last) => {
+      last.delete('details');
+      return last;
+    });
+  };
+
   return (
     <>
-      <div className="main">
+      <main className="main" onClick={handleMainClick}>
         {state.isLoading ? (
           <div className="shadow">
             <div className="spinner"></div>
@@ -153,7 +165,7 @@ const App = () => {
           <ResultList artworks={state.artworks} />
         </section>
         <ButtonToBreak />
-      </div>
+      </main>
       {details ? (
         <div id="details" className="details">
           <Outlet />

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { getDetailsFromId } from '../../api/api';
 import { Artwork } from '../../api/artwork';
-import { useOutsideClick } from '../hooks';
 
 const Details = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -19,16 +18,8 @@ const Details = () => {
     }
   }, [details]);
 
-  const ref = useOutsideClick(() => {
-    console.log('clicked outside of Details');
-    setSearchParams((last) => {
-      last.delete('details');
-      return last;
-    });
-  });
-
   return (
-    <div ref={ref}>
+    <>
       {artwork && (
         <div className="details__wrap">
           <p>
@@ -54,7 +45,7 @@ const Details = () => {
           </button>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
