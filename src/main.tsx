@@ -4,7 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './index.css';
 import { App } from './components/App.tsx';
 import { ErrorPage } from './components/ErrorPage/ErrorPage.tsx';
-import { Card } from './components/Card/Card.tsx';
+import { Details } from './components/Details/Details.tsx';
 import { NothingFound } from './components/NothingFound/NothingFound.tsx';
 
 const router = createBrowserRouter([
@@ -15,7 +15,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <Card />,
+        element: <Details />,
       },
     ],
   },

@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { getDetailsFromId } from '../../api/api';
 import { Artwork } from '../../api/artwork';
+import { useOutsideClick } from '../hooks';
 
-const Card = () => {
+const Details = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const details = Number.parseInt(searchParams.get('details') as string);
   const [artwork, setArtwork] = useState<Artwork | null>(null);
@@ -18,10 +19,18 @@ const Card = () => {
     }
   }, [details]);
 
+  const ref = useOutsideClick(() => {
+    console.log('clicked outside of Details');
+    setSearchParams((last) => {
+      last.delete('details');
+      return last;
+    });
+  });
+
   return (
-    <>
+    <div ref={ref}>
       {artwork && (
-        <div className="card__wrap">
+        <div className="details__wrap">
           <p>
             <b>{artwork?.title}</b>
           </p>
@@ -29,11 +38,11 @@ const Card = () => {
             {artwork.artist_title} {artwork.date_end}
           </p>
           <p>{artwork.medium_display}</p>
-          <p className="card__description">
+          <p className="details__description">
             {artwork.thumbnail && artwork.thumbnail.alt_text ? artwork.thumbnail.alt_text : ''}
           </p>
           <button
-            className="card__button"
+            className="details__button"
             onClick={() => {
               setSearchParams((last) => {
                 last.delete('details');
@@ -45,8 +54,8 @@ const Card = () => {
           </button>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
-export { Card };
+export { Details };

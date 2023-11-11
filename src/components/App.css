@@ -179,17 +179,17 @@ h1 {
   background-color: #e8e8e8;
 }
 
-.card__wrap {
+.details__wrap {
   position: fixed;
   width: 20rem;
   margin: 10rem 2rem 0;
 }
 
-.card__description {
+.details__description {
   margin-top: 2rem;
 }
 
-.card__button {
+.details__button {
   height: 2.5rem;
   width: 2.5rem;
   margin-top: 2rem;
@@ -201,7 +201,7 @@ h1 {
   transition: background-color 0.3s;
 }
 
-.card__button:hover {
+.details__button:hover {
   cursor: pointer;
   background-color: #fae8cd;
 }
