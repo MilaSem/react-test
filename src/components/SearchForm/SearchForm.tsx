@@ -1,11 +1,13 @@
-import { useState, ChangeEvent } from 'react';
+import { useState, ChangeEvent, useContext } from 'react';
+import { AppContext } from '../App';
 
 type SearchFormProps = {
-  searchTerm: string;
   onSubmit: (value: string) => void;
 };
 
-const SearchForm = ({ searchTerm, onSubmit }: SearchFormProps) => {
+const SearchForm = ({ onSubmit }: SearchFormProps) => {
+  const { searchTerm } = useContext(AppContext);
+
   const [inputValue, setInputValue] = useState(searchTerm);
 
   const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {

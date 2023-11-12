@@ -45,7 +45,7 @@ const Details = () => {
         artwork && (
           <div className="details__wrap">
             <p>
-              <b>{artwork?.title}</b>
+              <b>Title: {artwork?.title}</b>
             </p>
             <p>
               {artwork.artist_title} {artwork.date_end}

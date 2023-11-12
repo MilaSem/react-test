@@ -5,9 +5,9 @@ export type Artwork = {
   _score: number;
   thumbnail: {
     alt_text?: string;
-    width: number;
+    width: number | null;
     lqip: string;
-    height: number;
+    height: number | null;
   };
   api_model: string;
   is_boosted: boolean;

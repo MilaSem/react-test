@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent } from 'react';
+import { useState, useEffect, ChangeEvent, createContext } from 'react';
 import { useSearchParams, Outlet } from 'react-router-dom';
 import { SearchForm } from './SearchForm/SearchForm';
 import { ResultList } from './ResultList/ResultList';
@@ -17,6 +17,16 @@ interface AppState {
   limit: number;
   totalPages: number;
 }
+
+interface AppContextValues {
+  searchTerm: string;
+  artworks: Artwork[];
+}
+
+const AppContext = createContext<AppContextValues>({
+  searchTerm: '',
+  artworks: [],
+});
 
 const App = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -95,7 +105,7 @@ const App = () => {
   };
 
   return (
-    <>
+    <AppContext.Provider value={{ searchTerm: state.searchTerm, artworks: state.artworks }}>
       <main className="main" onClick={handleMainClick}>
         {state.isLoading ? (
           <div className="shadow">
@@ -104,10 +114,7 @@ const App = () => {
         ) : null}
         <h1>Let{`'`}s find artwork at the Art Institute of Chicago!</h1>
         <section className="search">
-          <SearchForm
-            searchTerm={state.searchTerm}
-            onSubmit={(value) => handleSearchSubmit(value)}
-          />
+          <SearchForm onSubmit={(value) => handleSearchSubmit(value)} />
         </section>
         <div className="pagination__nav">
           <div className="pagination">
@@ -162,7 +169,7 @@ const App = () => {
           />
         </div>
         <section className="result">
-          <ResultList artworks={state.artworks} />
+          <ResultList />
         </section>
         <ButtonToBreak />
       </main>
@@ -171,8 +178,8 @@ const App = () => {
           <Outlet />
         </div>
       ) : null}
-    </>
+    </AppContext.Provider>
   );
 };
 
-export { App };
+export { App, AppContext };
