@@ -1,43 +1,15 @@
-import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { getDetailsFromId } from '../../api/api';
-import { Artwork } from '../../api/artwork';
-
-interface DetailsState {
-  isLoading: boolean;
-}
+import { useGetArtworkDetailQuery } from '../../redux/services/artworks/artworkApi';
 
 const Details = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const details = Number.parseInt(searchParams.get('details') as string);
-  const [artwork, setArtwork] = useState<Artwork | null>(null);
-
-  const [state, setState] = useState<DetailsState>({
-    isLoading: false,
-  });
-
-  const setIsLoading = (isLoading: boolean) => {
-    setState({
-      isLoading,
-    });
-  };
-
-  useEffect(() => {
-    async function init() {
-      setIsLoading(true);
-      const response = await getDetailsFromId(details);
-      console.log('loading');
-      setArtwork(response);
-      setIsLoading(false);
-    }
-    if (details) {
-      init();
-    }
-  }, [details]);
+  const { data, isFetching } = useGetArtworkDetailQuery(details);
+  const artwork = data?.data;
 
   return (
     <>
-      {state.isLoading ? (
+      {isFetching ? (
         <div className="details__wrap">
           <p>Loading details...</p>
         </div>

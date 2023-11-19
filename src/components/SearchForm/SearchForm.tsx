@@ -1,15 +1,13 @@
-import { useState, ChangeEvent, useContext } from 'react';
-import { AppContext } from '../App';
+import { useState, ChangeEvent } from 'react';
+import { useAppSelector } from '../../redux/hooks';
 
 type SearchFormProps = {
   onSubmit: (value: string) => void;
 };
 
 const SearchForm = ({ onSubmit }: SearchFormProps) => {
-  const { searchTerm } = useContext(AppContext);
-
+  const searchTerm = useAppSelector((state) => state.artworkState.searchTerm);
   const [inputValue, setInputValue] = useState(searchTerm);
-
   const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };

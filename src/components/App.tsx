@@ -4,27 +4,23 @@ import { SearchForm } from './SearchForm/SearchForm';
 import { ResultList } from './ResultList/ResultList';
 import { type Artwork } from '../api/artwork';
 import './App.css';
-import { getArt, TOTAL_ITEMS_API, getTotalItems } from '../api/api';
 import { ButtonToBreak } from './ButtonToBreak/ButtonToBreak';
 import { Dropdown } from './Pagination/Dropdown';
 import { PaginationButton } from './Pagination/PaginationButton';
+import { useGetArtworksQuery } from '../redux/services/artworks/artworkApi';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { changeLimit, changeSearchTerm } from '../redux/features/artworks/artworkSlice';
+import { TOTAL_ITEMS_API } from '../api/api';
 
 interface AppState {
-  searchTerm: string;
-  artworks: Artwork[];
-  isLoading: boolean;
   page: number;
-  limit: number;
-  totalPages: number;
 }
 
 interface AppContextValues {
-  searchTerm: string;
   artworks: Artwork[];
 }
 
 const AppContext = createContext<AppContextValues>({
-  searchTerm: '',
   artworks: [],
 });
 
@@ -37,13 +33,24 @@ const App = () => {
   ];
 
   const [state, setState] = useState<AppState>({
-    searchTerm: localStorage.getItem('searchTerm') || '',
-    artworks: [],
-    isLoading: false,
     page: page || 1,
-    limit: 10,
-    totalPages: 100,
   });
+
+  const searchTerm = useAppSelector((state) => state.artworkState.searchTerm);
+  const dispatch = useAppDispatch();
+  const limit = useAppSelector((state) => state.artworkState.limit);
+  const { data, isFetching } = useGetArtworksQuery({
+    q: searchTerm,
+    limit,
+    page: state.page,
+  });
+
+  const artworks = data?.data || [];
+
+  let totalPages = 100;
+  if (data) {
+    totalPages = Math.min(TOTAL_ITEMS_API / limit, Math.ceil(data?.pagination.total / limit));
+  }
 
   useEffect(() => {
     setSearchParams((last) => {
@@ -52,43 +59,11 @@ const App = () => {
     });
   }, [state.page, setSearchParams]);
 
-  const setIsLoading = (isLoading: boolean) => {
-    setState((last) => ({
-      ...last,
-      isLoading,
-    }));
-  };
-
-  useEffect(() => {
-    const fetchArtworks = async () => {
-      setIsLoading(true);
-      const artworks = await getArt(state.searchTerm, state.page, state.limit);
-      const totalItems = await getTotalItems(state.searchTerm);
-      setState((last) => ({
-        ...last,
-        artworks,
-        totalPages: Math.min(TOTAL_ITEMS_API / state.limit, Math.ceil(totalItems / state.limit)),
-      }));
-      setIsLoading(false);
-    };
-
-    fetchArtworks();
-  }, [state.page, state.limit, state.searchTerm]);
-
-  useEffect(() => {
-    const searchTerm = localStorage.getItem('searchTerm') || '';
-    setState((last) => ({
-      ...last,
-      searchTerm,
-    }));
-  }, []);
-
   const handleSearchSubmit = (searchTerm: string) => {
-    localStorage.setItem('searchTerm', searchTerm);
+    dispatch(changeSearchTerm(searchTerm));
     setState((last) => ({
       ...last,
       page: 1,
-      searchTerm,
     }));
   };
 
@@ -105,9 +80,9 @@ const App = () => {
   };
 
   return (
-    <AppContext.Provider value={{ searchTerm: state.searchTerm, artworks: state.artworks }}>
+    <AppContext.Provider value={{ artworks }}>
       <main className="main" onClick={handleMainClick}>
-        {state.isLoading ? (
+        {isFetching ? (
           <div className="shadow">
             <div className="spinner"></div>
           </div>
@@ -133,7 +108,7 @@ const App = () => {
                 state.page > 1 &&
                   setState((last) => ({
                     ...last,
-                    page: state.page - 1,
+                    page: last.page - 1,
                   }));
               }}
             />
@@ -141,10 +116,10 @@ const App = () => {
             <PaginationButton
               char=">"
               onClick={() => {
-                state.page < state.totalPages &&
+                state.page < totalPages &&
                   setState((last) => ({
                     ...last,
-                    page: state.page + 1,
+                    page: last.page + 1,
                   }));
               }}
             />
@@ -153,16 +128,16 @@ const App = () => {
               onClick={() => {
                 setState((last) => ({
                   ...last,
-                  page: state.totalPages,
+                  page: totalPages,
                 }));
               }}
             />
           </div>
           <Dropdown
             onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+              dispatch(changeLimit(Number(e.target.value)));
               setState((last) => ({
                 ...last,
-                limit: Number(e.target.value),
                 page: 1,
               }));
             }}

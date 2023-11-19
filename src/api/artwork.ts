@@ -15,4 +15,5 @@ export type Artwork = {
   id: number;
   title: string;
   timestamp: string;
+  image_id: string;
 };

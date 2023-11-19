@@ -1,38 +1,20 @@
-import { useCallback, useEffect, useState } from 'react';
 import '../App.css';
 import { useSearchParams } from 'react-router-dom';
+import { generateArtworkImageURL } from '../../api/api';
 
 interface ResultListItemProps {
-  api_link: string;
+  apiLink: string;
   title: string;
-  alt_text: string;
+  altText: string;
   onClick: () => void;
   id: number;
+  imageId: string;
 }
 
 const ResultListItem = (props: ResultListItemProps) => {
   const [, setSearchParams] = useSearchParams();
-  const [imageArtUrl, setImageArtUrl] = useState('');
-
-  const getArtImgId = useCallback(async (): Promise<string> => {
-    return await fetch(`https://api.artic.edu/api/v1/artworks/${props.id}?fields=image_id`)
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        return data.data.image_id;
-      });
-  }, [props.id]);
-
-  useEffect(() => {
-    async function getArtImageUrl() {
-      const url = await getArtImgId();
-      setImageArtUrl(`https://www.artic.edu/iiif/2/${url}/full/843,/0/default.jpg`);
-    }
-    getArtImageUrl();
-  }, [getArtImgId]);
-
-  const { title, alt_text } = props;
+  const { title, altText, imageId } = props;
+  const imageArtUrl = generateArtworkImageURL(imageId);
 
   return (
     <>
@@ -49,7 +31,7 @@ const ResultListItem = (props: ResultListItemProps) => {
           <b>{title}</b>
         </p>
         <img src={imageArtUrl}></img>
-        <p>{alt_text}</p>
+        <p>{altText}</p>
       </div>
     </>
   );

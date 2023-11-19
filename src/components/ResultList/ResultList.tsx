@@ -15,11 +15,12 @@ const ResultList = () => {
             id={artwork.id}
             key={artwork.id}
             title={artwork.title}
-            api_link={artwork.api_link}
+            apiLink={artwork.api_link}
             onClick={() => {
               console.log(`click on card id: ${artwork.id}`);
             }}
-            alt_text={''}
+            altText={''}
+            imageId={artwork.image_id}
           />
         ))}
       </>
