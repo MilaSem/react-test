@@ -1,12 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Artwork } from '../../../api/artwork';
+import { artworkApi } from '../../services/artworks/artworkApi';
 
 interface ArtworkState {
   searchTerm: string;
   limit: number;
   isLoadingList: boolean;
   isLoadingDetail: boolean;
-  artworks: Artwork[];
 }
 
 const initialState: ArtworkState = {
@@ -14,12 +13,31 @@ const initialState: ArtworkState = {
   limit: 10,
   isLoadingList: false,
   isLoadingDetail: false,
-  artworks: [],
 };
 
 export const artworkSlice = createSlice({
   name: 'artworkSlice',
   initialState,
+  extraReducers: (builder) => {
+    builder.addMatcher(artworkApi.endpoints.getArtworks.matchPending, (state) => {
+      state.isLoadingList = true;
+    });
+    builder.addMatcher(artworkApi.endpoints.getArtworks.matchFulfilled, (state) => {
+      state.isLoadingList = false;
+    });
+    builder.addMatcher(artworkApi.endpoints.getArtworks.matchRejected, (state) => {
+      state.isLoadingList = false;
+    });
+    builder.addMatcher(artworkApi.endpoints.getArtworkDetail.matchPending, (state) => {
+      state.isLoadingDetail = true;
+    });
+    builder.addMatcher(artworkApi.endpoints.getArtworkDetail.matchFulfilled, (state) => {
+      state.isLoadingDetail = false;
+    });
+    builder.addMatcher(artworkApi.endpoints.getArtworkDetail.matchRejected, (state) => {
+      state.isLoadingDetail = false;
+    });
+  },
   reducers: {
     changeLimit: (state, action: PayloadAction<number>) => {
       return {
@@ -43,19 +61,10 @@ export const artworkSlice = createSlice({
     changeIsLoadingList: (state, action: PayloadAction<boolean>) => {
       state.isLoadingList = action.payload;
     },
-
-    changeArtworks: (state, action: PayloadAction<Artwork[]>) => {
-      state.artworks = action.payload;
-    },
   },
 });
 
-export const {
-  changeIsLoadingDetail,
-  changeArtworks,
-  changeIsLoadingList,
-  changeLimit,
-  changeSearchTerm,
-} = artworkSlice.actions;
+export const { changeIsLoadingDetail, changeIsLoadingList, changeLimit, changeSearchTerm } =
+  artworkSlice.actions;
 
 export default artworkSlice.reducer;

@@ -1,54 +1,56 @@
-import { render, screen, expect, waitFor, fireEvent } from '../../../config/tests/setup_tests';
-import { afterEach, describe, it, vi } from 'vitest';
-
+import { render, screen, expect, fireEvent } from '../../../config/tests/setup_tests';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, it } from 'vitest';
+import { HttpResponse, http } from 'msw';
+import { setupServer } from 'msw/node';
 import { Details } from './Details';
-import { getDetailsFromId } from '../../api/api';
-import { Artwork } from '../../api/artwork';
+import { artworkMocks } from '../../../config/tests/mocks';
 
-const mockArtwork: Artwork = {
-  _score: 9977.586,
-  thumbnail: {
-    width: null,
-    lqip: 'data:image/gif;base64,R0lGODlhBgAFAPQAAHhwV3N+bnh/aXR8dJtsG6VsAJx4IIp8PIx0QYZ2SoZ/bIx+b3CGboiAQoKAVoWAVpiLYZqNYIiAcoeIc5SNdJeJfJiKfXyCgneAkXmLp3eFqomMgIWJmZOerAAAAAAAACH5BAAAAAAALAAAAAAGAAUAAAUYoMYEXJdhgwBF1wM4RIE01HYYiVJZk7SEADs=',
-    height: null,
-  },
-  api_model: 'artworks',
-  is_boosted: true,
-  api_link: 'https://api.artic.edu/api/v1/artworks/28560',
-  id: 28560,
-  title: 'The Bedroom1',
-  timestamp: '2023-11-10T23:32:55-06:00',
-};
-
-vi.mock('../../api/api', () => {
-  const mockedGetDetailsFromId = vi.fn(() => Promise.resolve(mockArtwork));
-
-  return { getDetailsFromId: mockedGetDetailsFromId };
-});
+const server = setupServer(
+  http.get('https://api.artic.edu/api/v1/artworks/:imageId', () => {
+    return HttpResponse.json({ data: artworkMocks[0] });
+  }),
+);
 
 describe('Details tests', () => {
-  afterEach(() => {
-    vi.clearAllMocks();
+  beforeEach(() => {
+    window.history.replaceState('', '', window.location.origin);
   });
+
+  beforeAll(() => server.listen());
+  afterEach(() => server.resetHandlers());
+  afterAll(() => server.close());
   it('Should render loading indicator', async () => {
     window.history.replaceState('', '', `${window.location.href}?details=2`);
     render(<Details />);
     expect(screen.getByText('Loading details...')).toBeInTheDocument();
-    await waitFor(() => expect(getDetailsFromId).toHaveBeenCalled());
   });
+
   it('Should render close button', async () => {
     window.history.replaceState('', '', `${window.location.href}?details=2`);
     render(<Details />);
-    await waitFor(() => expect(getDetailsFromId).toHaveBeenCalledTimes(1));
-    expect(screen.getByText(new RegExp(mockArtwork.title))).toBeInTheDocument();
+    await screen.findByText(new RegExp('Title.*'));
+    expect(screen.getByText(new RegExp('Title.*'))).toBeInTheDocument();
+    expect(screen.getByText(new RegExp(artworkMocks[0].title))).toBeInTheDocument();
   });
+
   it('Check close button', async () => {
     window.history.replaceState('', '', `${window.location.href}?details=2`);
+
     const { container } = render(<Details />);
-    await waitFor(() => expect(getDetailsFromId).toHaveBeenCalled());
+    await screen.findByText(new RegExp('Title.*'));
+
     const closeButton = container.getElementsByClassName('details__button')[0];
     expect(screen.getByText(/Title/)).toBeInTheDocument();
+
+    let hasDetailsKeys = Boolean(
+      new URLSearchParams(`?${window.location.href.split('?')[1]} || ''`).get('details'),
+    );
+    expect(hasDetailsKeys).toEqual(true);
     fireEvent.click(closeButton);
-    screen.debug();
+
+    hasDetailsKeys = Boolean(
+      new URLSearchParams(`?${window.location.href.split('?')[1]} || ''`).get('details'),
+    );
+    expect(hasDetailsKeys).toEqual(false);
   });
 });
