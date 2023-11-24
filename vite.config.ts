@@ -11,7 +11,7 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./config/tests/setup_tests.ts'],
-    exclude: [...configDefaults.exclude],
+    exclude: [...configDefaults.exclude, 'src'],
     coverage: {
       provider: 'v8',
       exclude: ['src/redux', 'config'],
