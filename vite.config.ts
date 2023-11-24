@@ -11,7 +11,8 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./config/tests/setup_tests.ts'],
-    exclude: [...configDefaults.exclude, 'src'],
+    // exclude: [...configDefaults.exclude],
+    include: ['src/components/ButtonToBreak/*.test.tsx'],
     coverage: {
       provider: 'v8',
       exclude: ['src/redux', 'config'],
