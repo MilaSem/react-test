@@ -1,5 +1,3 @@
-import '../App.css';
-
 interface PaginationProps {
   onClick: () => void;
   char: string;

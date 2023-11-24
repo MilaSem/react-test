@@ -1,5 +1,4 @@
 import { useContext } from 'react';
-import '../App.css';
 import { ResultListItem } from '../ResultListItem/ResultListItem';
 import { NothingFound } from '../NothingFound/NothingFound';
 import { AppContext } from '../App';

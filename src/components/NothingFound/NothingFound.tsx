@@ -1,5 +1,3 @@
-import '../App.css';
-
 const NothingFound = () => {
   return (
     <div className="nothing-found">

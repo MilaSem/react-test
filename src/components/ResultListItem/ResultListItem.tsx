@@ -1,6 +1,5 @@
-import '../App.css';
-import { useSearchParams } from 'react-router-dom';
 import { generateArtworkImageURL } from '../../api/api';
+import { useRouter } from 'next/router';
 
 interface ResultListItemProps {
   apiLink: string;
@@ -12,7 +11,7 @@ interface ResultListItemProps {
 }
 
 const ResultListItem = (props: ResultListItemProps) => {
-  const [, setSearchParams] = useSearchParams();
+  const router = useRouter();
   const { title, altText, imageId } = props;
   const imageArtUrl = generateArtworkImageURL(imageId);
 
@@ -21,10 +20,11 @@ const ResultListItem = (props: ResultListItemProps) => {
       <div
         className="result__item"
         onClick={() => {
-          setSearchParams((last) => {
-            last.set('details', String(props.id));
-            return last;
-          });
+          // setSearchParams((last) => {
+          //   last.set('details', String(props.id));
+          //   return last;
+          // });
+          router.push(`/details/${props.id}`);
         }}
       >
         <p>

@@ -9,7 +9,7 @@ interface ArtworkState {
 }
 
 const initialState: ArtworkState = {
-  searchTerm: localStorage.getItem('searchTerm') || '',
+  searchTerm: '',
   limit: 10,
   isLoadingList: false,
   isLoadingDetail: false,
