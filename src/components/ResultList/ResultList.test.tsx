@@ -1,26 +1,19 @@
-import { render, screen, describe, expect, it } from '../../../config/tests/setup_tests';
-
+import { render, screen, describe, expect, it, afterEach } from '../../../config/tests/setup_tests';
+import { vi } from 'vitest';
 import { artworkMocks } from '../../../config/tests/mocks';
 
 import { ResultList } from './ResultList';
 
-import { AppContext } from '../App';
-
 describe('ResultList tests', () => {
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
   it('Should render NothingFound component', () => {
-    render(
-      <AppContext.Provider value={{ artworks: [] }}>
-        <ResultList />
-      </AppContext.Provider>,
-    );
+    render(<ResultList artworks={[]} />);
     expect(screen.getByText(/Nothing found/)).toBeInTheDocument();
   });
   it('Should render the speciified number of cards', () => {
-    const { container } = render(
-      <AppContext.Provider value={{ artworks: artworkMocks }}>
-        <ResultList />
-      </AppContext.Provider>,
-    );
+    const { container } = render(<ResultList artworks={artworkMocks} />);
     const collection = container.getElementsByClassName('result__item');
     expect(collection.length).toEqual(2);
   });

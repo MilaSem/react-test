@@ -11,3 +11,17 @@ const customRender = (ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>
 export * from '@testing-library/react';
 export { customRender as render };
 export * from 'vitest';
+
+import { vi } from 'vitest';
+import { useRouter } from 'next/router';
+
+vi.mock('next/router', () => ({
+  useRouter: vi.fn(),
+}));
+
+const pushMock = vi.fn();
+
+useRouter.mockReturnValue({
+  query: {},
+  push: pushMock,
+});
