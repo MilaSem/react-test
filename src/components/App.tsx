@@ -1,50 +1,39 @@
-import { useState, useEffect, ChangeEvent, createContext } from 'react';
-import { useSearchParams, Outlet } from 'react-router-dom';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { SearchForm } from './SearchForm/SearchForm';
 import { ResultList } from './ResultList/ResultList';
-import { type Artwork } from '../api/artwork';
-import './App.css';
 import { ButtonToBreak } from './ButtonToBreak/ButtonToBreak';
 import { Dropdown } from './Pagination/Dropdown';
 import { PaginationButton } from './Pagination/PaginationButton';
 import { useGetArtworksQuery } from '../redux/services/artworks/artworkApi';
-import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { changeLimit, changeSearchTerm } from '../redux/features/artworks/artworkSlice';
 import { TOTAL_ITEMS_API } from '../api/api';
+import { useRouter } from 'next/router';
+import { useSearchParams } from 'next/navigation';
 
 interface AppState {
   page: number;
+  searchTerm: string;
+  limit: number;
 }
-
-interface AppContextValues {
-  artworks: Artwork[];
-}
-
-const AppContext = createContext<AppContextValues>({
-  artworks: [],
-});
 
 const App = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const [page, details] = [
-    Number(searchParams.get('page')),
-    Number.parseInt(searchParams.get('details') as string),
-  ];
+  const page = Number.parseInt(searchParams.get('page') as string) || 1;
+  const search = searchParams.get('search') || '';
+  const limit = Number.parseInt(searchParams.get('limit') as string) || 10;
 
   const [state, setState] = useState<AppState>({
-    page: page || 1,
-  });
-
-  const searchTerm = useAppSelector((state) => state.artworkState.searchTerm);
-  const dispatch = useAppDispatch();
-  const limit = useAppSelector((state) => state.artworkState.limit);
-  const { data, isFetching } = useGetArtworksQuery({
-    q: searchTerm,
+    page,
     limit,
-    page: state.page,
+    searchTerm: search,
   });
 
+  const { data } = useGetArtworksQuery({
+    q: search,
+    limit,
+    page,
+  });
   const artworks = data?.data || [];
 
   let totalPages = 100;
@@ -53,43 +42,20 @@ const App = () => {
   }
 
   useEffect(() => {
-    setSearchParams((last) => {
-      last.set('page', String(state.page));
-      return last;
-    });
-  }, [state.page, setSearchParams]);
-
-  const handleSearchSubmit = (searchTerm: string) => {
-    dispatch(changeSearchTerm(searchTerm));
-    setState((last) => ({
-      ...last,
-      page: 1,
-    }));
-  };
-
-  const handleMainClick = (event: { preventDefault: () => void }) => {
-    if (!details) {
-      return;
+    if (state.page !== page || state.limit !== limit || state.searchTerm !== search) {
+      router.push({
+        pathname: '/',
+        query: { ...router.query, page: state.page, limit: state.limit, search: state.searchTerm },
+      });
     }
-
-    event.preventDefault();
-    setSearchParams((last) => {
-      last.delete('details');
-      return last;
-    });
-  };
+  }, [router, state, limit, page, search]);
 
   return (
-    <AppContext.Provider value={{ artworks }}>
-      <main className="main" onClick={handleMainClick}>
-        {isFetching ? (
-          <div className="shadow">
-            <div className="spinner"></div>
-          </div>
-        ) : null}
+    <>
+      <main className="main">
         <h1>Let{`'`}s find artwork at the Art Institute of Chicago!</h1>
         <section className="search">
-          <SearchForm onSubmit={(value) => handleSearchSubmit(value)} />
+          <SearchForm />
         </section>
         <div className="pagination__nav">
           <div className="pagination">
@@ -112,7 +78,7 @@ const App = () => {
                   }));
               }}
             />
-            <span className="pagination__number">{state.page}</span>
+            <span className="pagination__number">{page}</span>
             <PaginationButton
               char=">"
               onClick={() => {
@@ -135,26 +101,22 @@ const App = () => {
           </div>
           <Dropdown
             onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-              dispatch(changeLimit(Number(e.target.value)));
+              console.log('test');
               setState((last) => ({
                 ...last,
                 page: 1,
+                limit: Number(e.target.value),
               }));
             }}
           />
         </div>
         <section className="result">
-          <ResultList />
+          <ResultList artworks={artworks} />
         </section>
         <ButtonToBreak />
       </main>
-      {details ? (
-        <div id="details" className="details">
-          <Outlet />
-        </div>
-      ) : null}
-    </AppContext.Provider>
+    </>
   );
 };
 
-export { App, AppContext };
+export { App };

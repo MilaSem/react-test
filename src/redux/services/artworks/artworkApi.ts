@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { Artwork } from '../../../api/artwork';
+import { HYDRATE } from 'next-redux-wrapper';
 
 interface ArtworkListParams {
   q: string;
@@ -23,6 +24,11 @@ interface GetArtworkDetailResponse {
 export const artworkApi = createApi({
   reducerPath: 'artworkApi',
   baseQuery: fetchBaseQuery({ baseUrl: 'https://api.artic.edu/api/v1' }),
+  extractRehydrationInfo(action, { reducerPath }) {
+    if (action.type === HYDRATE) {
+      return action.payload[reducerPath];
+    }
+  },
   tagTypes: ['Artworks'],
   endpoints: (builder) => ({
     getArtworks: builder.query<GetArtworksResponse, ArtworkListParams>({

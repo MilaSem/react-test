@@ -1,12 +1,12 @@
-import { useContext } from 'react';
-import '../App.css';
 import { ResultListItem } from '../ResultListItem/ResultListItem';
 import { NothingFound } from '../NothingFound/NothingFound';
-import { AppContext } from '../App';
+import { Artwork } from '@/api/artwork';
 
-const ResultList = () => {
-  const { artworks } = useContext(AppContext);
+interface ResultListProps {
+  artworks: Artwork[];
+}
 
+const ResultList: React.FC<ResultListProps> = ({ artworks }) => {
   if (artworks.length !== 0) {
     return (
       <>

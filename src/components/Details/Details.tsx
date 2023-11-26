@@ -1,15 +1,15 @@
-import { useSearchParams } from 'react-router-dom';
 import { useGetArtworkDetailQuery } from '../../redux/services/artworks/artworkApi';
+import { useRouter } from 'next/router';
 
 const Details = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const details = Number.parseInt(searchParams.get('details') as string);
-  const { data, isFetching } = useGetArtworkDetailQuery(details);
+  const router = useRouter();
+  const details = Number.parseInt(router.query.details as string);
+  const { data } = useGetArtworkDetailQuery(details);
   const artwork = data?.data;
 
   return (
     <>
-      {isFetching ? (
+      {false ? (
         <div className="details__wrap">
           <p>Loading details...</p>
         </div>
@@ -29,10 +29,7 @@ const Details = () => {
             <button
               className="details__button"
               onClick={() => {
-                setSearchParams((last) => {
-                  last.delete('details');
-                  return last;
-                });
+                router.push('/');
               }}
             >
               x
