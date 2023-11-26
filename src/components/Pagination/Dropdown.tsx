@@ -1,5 +1,4 @@
 import { ChangeEvent } from 'react';
-import '../App.css';
 
 interface DropdownProps {
   onChange: (e: ChangeEvent<HTMLSelectElement>) => void;
