@@ -1,7 +1,6 @@
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useState, useRef, useEffect } from 'react';
-import { formSchema } from './validation';
-import { FormState } from '@/redux/features/common';
+import { LocalFormState, formSchema } from './validation';
 import { ValidationError } from 'yup';
 import { formUncontrolledSlice } from '@/redux/features/uncontrolled/uncontrolledSlice';
 import { getBase64FileRepresentation } from '@/util/file';
@@ -57,7 +56,7 @@ const FormUncontrolled = () => {
           }
           return acc;
         },
-        {} as Record<string, string | number | boolean | File>,
+        {} as Record<string, string | number | boolean | FileList>,
       );
       const gender = formElements.find(
         (item) =>
@@ -67,17 +66,20 @@ const FormUncontrolled = () => {
       const picture = formElements.find(
         (item) => (item as HTMLInputElement).name === 'picture',
       ) as HTMLInputElement;
-      formValues['picture'] = picture.files?.[0] as File;
+      formValues['picture'] = picture.files as FileList;
 
       try {
         const validated = (await formSchema.validate(formValues, {
           abortEarly: false,
-        })) as FormState;
+        })) as LocalFormState;
         setFormErrorState(initialFormErrorState);
-        const pictureBase64 = await getBase64FileRepresentation(formValues['picture']);
+        const file = picture.files?.[0] as File;
+
+        const pictureBase64 = await getBase64FileRepresentation(file);
         const newFormState = { ...validated, picture: pictureBase64 };
         console.log('newformstate', newFormState);
         dispatch(formUncontrolledSlice.actions.changeState(newFormState));
+        dispatch(formUncontrolledSlice.actions.changeIsUpdated(true));
         navigate('/');
       } catch (e) {
         if (e instanceof ValidationError) {
@@ -128,7 +130,7 @@ const FormUncontrolled = () => {
 
           <div className="form__item">
             <input
-              defaultValue={uncontrolledFormState.age}
+              defaultValue={uncontrolledFormState.age || ''}
               className="input__text"
               name="age"
               id="age"
@@ -202,17 +204,16 @@ const FormUncontrolled = () => {
           </div>
 
           <div className="form__item">
-            <div className="accept__wrapper">
-              <label htmlFor="accept" className="accept__label">
-                Accept T&C
-              </label>
-              <input
-                id="accept"
-                type="checkbox"
-                name="accept"
-                defaultChecked={uncontrolledFormState.doesAcceptTC}
-              />
-            </div>
+            <label htmlFor="accept" className="accept__label">
+              Accept T&C
+            </label>
+            <input
+              id="accept"
+              type="checkbox"
+              name="doesAcceptTC"
+              defaultChecked={uncontrolledFormState.doesAcceptTC}
+            />
+            {formErrorState.doesAcceptTC && <div>{formErrorState.doesAcceptTC.join(',')}</div>}
           </div>
 
           <div className="form__item">

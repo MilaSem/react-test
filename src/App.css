@@ -5,8 +5,8 @@ h1 {
 }
 
 .link__wrapper {
-  padding-top: 3rem;
-  padding-bottom: 3rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
 }
 
 .nav {
@@ -41,7 +41,11 @@ h1 {
 
 .data__card {
   padding: 2rem;
-  height: 20rem;
+  min-height: 20rem;
+}
+
+.data__card-updated {
+  border: 1px solid #b6851c;
 }
 
 .button {
@@ -68,7 +72,6 @@ h1 {
   font-family: inherit;
   border-radius: 0.25rem;
   border: none;
-  /* background-color: #cdcdfa; */
   transition: background-color 0.3s;
 }
 
@@ -81,16 +84,17 @@ h1 {
 }
 
 .form {
-  width: 50%;
+  width: 60%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: start;
   row-gap: 5px;
 }
 
 .form__item {
   display: flex;
+  height: 2.5rem;
   align-items: center;
   margin-bottom: 1rem;
 }
@@ -112,6 +116,10 @@ fieldset {
   outline: none;
 }
 
+.form__item div {
+  width: 20rem;
+}
+
 .input__picture {
   font-size: inherit;
   font-family: inherit;
@@ -128,16 +136,15 @@ fieldset {
 }
 
 .button__wrapper {
-  padding-top: 3rem;
+  padding-top: 2rem;
   display: flex;
   column-gap: 3rem;
 }
 
-.accept__wrapper {
-  padding-top: 1rem;
+.accept__label {
+  margin-right: 1rem;
 }
 
-.accept__label {
-  margin-top: 1rem;
-  margin-right: 1rem;
+img {
+  width: 100%;
 }

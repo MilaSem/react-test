@@ -15,11 +15,12 @@ export interface FormState {
   doesAcceptTC: boolean;
   picture: string;
   country: string;
+  isUpdated?: boolean;
 }
 
 export const initialFormState: FormState = {
   name: '',
-  age: 18,
+  age: 0,
   email: '',
   password: '',
   passwordConfirmation: '',
@@ -60,5 +61,8 @@ export const formReducers = {
   },
   changeCountry: (state: FormState, action: PayloadAction<string>) => {
     state.country = action.payload;
+  },
+  changeIsUpdated: (state: FormState, action: PayloadAction<boolean>) => {
+    state.isUpdated = action.payload;
   },
 };
